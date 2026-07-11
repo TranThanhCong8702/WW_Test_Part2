@@ -8,7 +8,7 @@ public class SO_normalItemTexture : ScriptableObject
     [System.Serializable]
     public class TextureResources
     {
-        public List<Texture2D> texture2Ds;
+        public Sprite[] texture2Ds;
     }
     public List<TextureResources> NewTextures = new List<TextureResources>();
 
