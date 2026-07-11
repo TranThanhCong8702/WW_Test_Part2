@@ -98,7 +98,7 @@ public class Item
                 () =>
                 {
                     //GameObject.Destroy(View.gameObject);
-                    View.DOKill();
+                    //View.DOKill();
                     ObjectPooling.Instance.Return("item", View.gameObject);
                     View = null;
                 }
@@ -129,7 +129,7 @@ public class Item
         Cell = null;
         if (View)
         {
-            //View.DOKill();
+            View.DOKill();
             sp.sprite = null;
             sp = null;
             View.position = Vector3.zero;
