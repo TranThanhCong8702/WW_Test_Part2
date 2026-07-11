@@ -26,6 +26,7 @@ public class Board
 
     private int m_matchMin;
     private SO_normalItemTexture m_itemTexture;
+    private Dictionary<NormalItem.eNormalType, int> m_amountOnBoardDic;
     public Board(Transform transform, GameSettings gameSettings, SO_normalItemTexture itemTexture)
     {
         m_root = transform;
@@ -37,7 +38,7 @@ public class Board
 
         m_cells = new Cell[boardSizeX, boardSizeY];
         m_normalItem = new NormalItem.eNormalType[boardSizeX, boardSizeY];
-
+        m_amountOnBoardDic = new Dictionary<NormalItem.eNormalType, int>();
         CreateBoard();
     }
 
@@ -180,11 +181,53 @@ public class Board
             {
                 Cell cell = m_cells[x, y];
                 if (!cell.IsEmpty) continue;
-
+                
                 NormalItem item = new NormalItem();
+                List<NormalItem.eNormalType> types = new List<NormalItem.eNormalType>();
+                if (cell.NeighbourBottom != null)
+                {
+                    NormalItem nitem = cell.NeighbourBottom.Item as NormalItem;
+                    if (nitem != null)
+                    {
+                        types.Add(nitem.ItemType);
+                    }
+                }
+                if (cell.NeighbourUp != null)
+                {
+                    NormalItem nitem = cell.NeighbourUp.Item as NormalItem;
+                    if (nitem != null)
+                    {
+                        types.Add(nitem.ItemType);
+                    }
+                }
 
+                if (cell.NeighbourLeft != null)
+                {
+                    NormalItem nitem = cell.NeighbourLeft.Item as NormalItem;
+                    if (nitem != null)
+                    {
+                        types.Add(nitem.ItemType);
+                    }
+                }
+                if (cell.NeighbourRight != null)
+                {
+                    NormalItem nitem = cell.NeighbourRight.Item as NormalItem;
+                    if (nitem != null)
+                    {
+                        types.Add(nitem.ItemType);
+                    }
+                }
+                if (Utils.GetListNormalTypeExcept(types).Count > 0)
+                {
+                    NormalItem.eNormalType choosenType = UpdateAmountOnBoard(Utils.GetListNormalTypeExcept(types));
+                    item.SetType(choosenType);
+                    Debug.Log(choosenType);
+                }
+                else
+                {
+                    item.SetType(Utils.GetRandomNormalType());
+                }    
 
-                item.SetType(Utils.GetRandomNormalType());
                 item.SetView(m_itemTexture.NewTextures[0].texture2Ds);
                 item.SetViewRoot(m_root);
 
@@ -710,5 +753,41 @@ public class Board
                 m_cells[x, y] = null;
             }
         }
+    }
+    public NormalItem.eNormalType UpdateAmountOnBoard(List<NormalItem.eNormalType> filteredtypes)
+    {
+        foreach (NormalItem.eNormalType types in filteredtypes)
+        {
+            if (m_amountOnBoardDic.ContainsKey(types))
+            {
+                m_amountOnBoardDic[types] = 0;
+            }
+            else
+            {
+                m_amountOnBoardDic.Add(types, 0);
+            }
+        }
+
+        for (int x = 0; x < boardSizeX; x++)
+        {
+            for (int y = 0; y < boardSizeY; y++)
+            {
+                NormalItem item = m_cells[x, y].Item as NormalItem;
+
+                if (item != null && filteredtypes.Contains(item.ItemType))
+                    m_amountOnBoardDic[item.ItemType]++;
+            }
+        }
+        int min = int.MaxValue;
+        NormalItem.eNormalType choosenType = filteredtypes[0];
+        foreach(NormalItem.eNormalType filtered in filteredtypes)
+        {
+            if (m_amountOnBoardDic[filtered] < min)
+            {
+                min = m_amountOnBoardDic[filtered];
+                choosenType = filtered;
+            }
+        }
+        return choosenType;
     }
 }

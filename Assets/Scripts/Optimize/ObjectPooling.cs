@@ -79,6 +79,7 @@ public class ObjectPooling : MonoBehaviour
 
         GameObject obj = pool.objects.Dequeue();
         obj.transform.localScale = Vector3.one;
+        obj.transform.GetComponent<SpriteRenderer>().sprite = null;
         obj.SetActive(true);
 
         return obj;
@@ -91,7 +92,7 @@ public class ObjectPooling : MonoBehaviour
             Destroy(obj);
             return;
         }
-
+        obj.transform.GetComponent<SpriteRenderer>().sprite = null;
         obj.SetActive(false);
 
         obj.transform.SetParent(transform);

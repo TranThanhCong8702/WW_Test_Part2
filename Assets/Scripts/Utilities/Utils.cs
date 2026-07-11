@@ -24,14 +24,12 @@ public class Utils
 
         return result;
     }
-
-    public static NormalItem.eNormalType GetMinNormalTypeExcept(NormalItem.eNormalType[] types)
+    public static List<NormalItem.eNormalType> GetListNormalTypeExcept(List<NormalItem.eNormalType> types)
     {
         List<NormalItem.eNormalType> list = Enum.GetValues(typeof(NormalItem.eNormalType)).Cast<NormalItem.eNormalType>().Except(types).ToList();
 
-        int rnd = URandom.Range(0, list.Count);
-        NormalItem.eNormalType result = list[rnd];
 
-        return result;
+        return list;
     }
+
 }
