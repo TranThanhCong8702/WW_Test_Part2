@@ -11,22 +11,18 @@ public class Item
 
     public Transform View { get; private set; }
 
+    private SpriteRenderer sp;
 
-    public virtual void SetView()
+    public virtual void SetView(Sprite[] texArray)
     {
-        string prefabname = GetPrefabName();
-
-        if (!string.IsNullOrEmpty(prefabname))
-        {
-            GameObject prefab = Resources.Load<GameObject>(prefabname);
-            if (prefab)
-            {
-                View = GameObject.Instantiate(prefab).transform;
-            }
-        }
+        int prefabId = GetPrefabId();
+        View = ObjectPooling.Instance.Spawn("item").transform;
+        sp = View.GetComponent<SpriteRenderer>();
+        if (prefabId >= texArray.Length) return;
+        sp.sprite = texArray[prefabId];
     }
 
-    protected virtual string GetPrefabName() { return string.Empty; }
+    protected virtual int GetPrefabId() { return 1; }
 
     public virtual void SetCell(Cell cell)
     {
@@ -60,7 +56,7 @@ public class Item
     {
         if (View == null) return;
 
-        SpriteRenderer sp = View.GetComponent<SpriteRenderer>();
+        
         if (sp)
         {
             sp.sortingOrder = 1;
@@ -72,7 +68,7 @@ public class Item
     {
         if (View == null) return;
 
-        SpriteRenderer sp = View.GetComponent<SpriteRenderer>();
+        
         if (sp)
         {
             sp.sortingOrder = 0;
@@ -101,7 +97,9 @@ public class Item
             View.DOScale(0.1f, 0.1f).OnComplete(
                 () =>
                 {
-                    GameObject.Destroy(View.gameObject);
+                    //GameObject.Destroy(View.gameObject);
+                    View.DOKill();
+                    ObjectPooling.Instance.Return("item", View.gameObject);
                     View = null;
                 }
                 );
@@ -123,6 +121,21 @@ public class Item
         if (View)
         {
             View.DOKill();
+        }
+    }
+
+    internal void Reset()
+    {
+        Cell = null;
+        if (View)
+        {
+            View.DOKill();
+            sp.sprite = null;
+            sp = null;
+            View.position = Vector3.zero;
+            View.localScale = Vector3.one;
+            ObjectPooling.Instance.Return("item", View.gameObject);
+            View = null;
         }
     }
 
