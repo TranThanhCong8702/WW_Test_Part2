@@ -7,13 +7,13 @@ using UnityEngine.UI;
 public class LevelMoves : LevelCondition
 {
     private int m_moves;
-
+    private int m_move_value;
     private BoardController m_board;
 
     public override void Setup(float value, Text txt, BoardController board)
     {
         base.Setup(value, txt);
-
+        m_move_value = (int)value;
         m_moves = (int)value;
 
         m_board = board;
@@ -44,8 +44,14 @@ public class LevelMoves : LevelCondition
 
     protected override void OnDestroy()
     {
+        m_move_value = 0;
         if (m_board != null) m_board.OnMoveEvent -= OnMove;
 
         base.OnDestroy();
+    }
+    public void ResetMove()
+    {
+        m_moves = m_move_value;
+        UpdateText();
     }
 }

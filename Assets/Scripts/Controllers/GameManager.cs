@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static GameManager;
 
 public class GameManager : MonoBehaviour
 {
@@ -44,12 +45,15 @@ public class GameManager : MonoBehaviour
     private UIMainManager m_uiMenu;
 
     private LevelCondition m_levelCondition;
+    private SO_normalItemTexture m_itemTexture;
+    private int m_eLevelMode;
 
     private void Awake()
     {
         State = eStateGame.SETUP;
 
         m_gameSettings = Resources.Load<GameSettings>(Constants.GAME_SETTINGS_PATH);
+        m_itemTexture = Resources.Load<SO_normalItemTexture>(Constants.ITEM_TEXTURE_PATH);
 
         m_uiMenu = FindObjectOfType<UIMainManager>();
         m_uiMenu.Setup(this);
@@ -83,8 +87,9 @@ public class GameManager : MonoBehaviour
 
     public void LoadLevel(eLevelMode mode)
     {
+        m_eLevelMode = (int)mode;
         m_boardController = new GameObject("BoardController").AddComponent<BoardController>();
-        m_boardController.StartGame(this, m_gameSettings);
+        m_boardController.StartGame(this, m_gameSettings, m_itemTexture);
 
         if (mode == eLevelMode.MOVES)
         {
@@ -106,7 +111,18 @@ public class GameManager : MonoBehaviour
     {
         StartCoroutine(WaitBoardController());
     }
-
+    public void RestartLevel()
+    {
+        if (m_eLevelMode == (int)eLevelMode.TIMER)
+        {
+            (m_levelCondition as LevelTime).ResetTime();
+        }
+        else
+        {
+            (m_levelCondition as LevelMoves).ResetMove();
+        }
+        m_boardController.ReFill();
+    }
     internal void ClearLevel()
     {
         if (m_boardController)
@@ -127,7 +143,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         State = eStateGame.GAME_OVER;
-
+        m_eLevelMode = 0;
         if (m_levelCondition != null)
         {
             m_levelCondition.ConditionCompleteEvent -= GameOver;

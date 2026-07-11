@@ -17,7 +17,6 @@ public class Cell : MonoBehaviour
 
     public Cell NeighbourLeft { get; set; }
 
-
     public bool IsEmpty => Item == null;
 
     public void Setup(int cellX, int cellY)
@@ -53,12 +52,20 @@ public class Cell : MonoBehaviour
             Item.ShowAppearAnimation();
         }
     }
-
+    internal void Reset()
+    {
+        if (Item != null)
+        {
+            Item.Reset();
+            Item = null;
+        }
+    }
     internal void Clear()
     {
         if (Item != null)
         {
-            Item.Clear();
+            //Item.Clear();
+            Item.Reset();
             Item = null;
         }
     }

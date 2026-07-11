@@ -20,21 +20,23 @@ public class Board
     private int boardSizeY;
 
     private Cell[,] m_cells;
+    private NormalItem.eNormalType[,] m_normalItem;
 
     private Transform m_root;
 
     private int m_matchMin;
-
-    public Board(Transform transform, GameSettings gameSettings)
+    private SO_normalItemTexture m_itemTexture;
+    public Board(Transform transform, GameSettings gameSettings, SO_normalItemTexture itemTexture)
     {
         m_root = transform;
-
+        m_itemTexture = itemTexture;
         m_matchMin = gameSettings.MatchesMin;
 
         this.boardSizeX = gameSettings.BoardSizeX;
         this.boardSizeY = gameSettings.BoardSizeY;
 
         m_cells = new Cell[boardSizeX, boardSizeY];
+        m_normalItem = new NormalItem.eNormalType[boardSizeX, boardSizeY];
 
         CreateBoard();
     }
@@ -100,16 +102,50 @@ public class Board
                     }
                 }
 
-                item.SetType(Utils.GetRandomNormalTypeExcept(types.ToArray()));
-                item.SetView();
+                item.SetType(Utils.GetRandomNormalTypeExcept(types));
+                item.SetView(m_itemTexture.NewTextures[0].texture2Ds);
                 item.SetViewRoot(m_root);
 
                 cell.Assign(item);
+                if (item != null)
+                {
+                    m_normalItem[x, y] = item.ItemType;
+                }
                 cell.ApplyItemPosition(false);
             }
         }
     }
+    public void Restart()
+    {
+        if (m_normalItem == null)
+            return;
 
+        for (int x = 0; x < boardSizeX; x++)
+        {
+            for (int y = 0; y < boardSizeY; y++)
+            {
+                if(m_cells[x, y] != null)
+                {
+                    m_cells[x, y].Reset();
+                }
+            }
+        }
+
+        for (int x = 0; x < boardSizeX; x++)
+        {
+            for (int y = 0; y < boardSizeY; y++)
+            {
+                NormalItem item = new NormalItem();
+
+                item.SetType(m_normalItem[x, y]);
+                item.SetView(m_itemTexture.NewTextures[0].texture2Ds);
+                item.SetViewRoot(m_root);
+
+                m_cells[x, y].Assign(item);
+                m_cells[x, y].ApplyItemPosition(false);
+            }
+        }
+    }
     internal void Shuffle()
     {
         List<Item> list = new List<Item>();
@@ -147,8 +183,9 @@ public class Board
 
                 NormalItem item = new NormalItem();
 
+
                 item.SetType(Utils.GetRandomNormalType());
-                item.SetView();
+                item.SetView(m_itemTexture.NewTextures[0].texture2Ds);
                 item.SetViewRoot(m_root);
 
                 cell.Assign(item);
@@ -282,7 +319,7 @@ public class Board
                 cellToConvert = matches[rnd];
             }
 
-            item.SetView();
+            item.SetView(m_itemTexture.NewTextures[1].texture2Ds);
             item.SetViewRoot(m_root);
 
             cellToConvert.Free();

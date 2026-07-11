@@ -15,7 +15,17 @@ public class Utils
         return result;
     }
 
-    public static NormalItem.eNormalType GetRandomNormalTypeExcept(NormalItem.eNormalType[] types)
+    public static NormalItem.eNormalType GetRandomNormalTypeExcept(List<NormalItem.eNormalType> types)
+    {
+        List<NormalItem.eNormalType> list = Enum.GetValues(typeof(NormalItem.eNormalType)).Cast<NormalItem.eNormalType>().Except(types).ToList();
+
+        int rnd = URandom.Range(0, list.Count);
+        NormalItem.eNormalType result = list[rnd];
+
+        return result;
+    }
+
+    public static NormalItem.eNormalType GetMinNormalTypeExcept(NormalItem.eNormalType[] types)
     {
         List<NormalItem.eNormalType> list = Enum.GetValues(typeof(NormalItem.eNormalType)).Cast<NormalItem.eNormalType>().Except(types).ToList();
 

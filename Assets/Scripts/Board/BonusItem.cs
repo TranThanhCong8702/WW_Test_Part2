@@ -20,21 +20,21 @@ public class BonusItem : Item
         ItemType = type;
     }
 
-    protected override string GetPrefabName()
+    protected override int GetPrefabId()
     {
-        string prefabname = string.Empty;
+        int prefabname = 0;
         switch (ItemType)
         {
             case eBonusType.NONE:
                 break;
             case eBonusType.HORIZONTAL:
-                prefabname = Constants.PREFAB_BONUS_HORIZONTAL;
+                prefabname = Constants.ID_BONUS_HORIZONTAL;
                 break;
             case eBonusType.VERTICAL:
-                prefabname = Constants.PREFAB_BONUS_VERTICAL;
+                prefabname = Constants.ID_BONUS_VERTICAL;
                 break;
             case eBonusType.ALL:
-                prefabname = Constants.PREFAB_BONUS_BOMB;
+                prefabname = Constants.ID_BONUS_BOMB;
                 break;
         }
 

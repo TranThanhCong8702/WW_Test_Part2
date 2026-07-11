@@ -30,18 +30,19 @@ public class BoardController : MonoBehaviour
     private bool m_hintIsShown;
 
     private bool m_gameOver;
+    private SO_normalItemTexture m_itemTexture;
 
-    public void StartGame(GameManager gameManager, GameSettings gameSettings)
+    public void StartGame(GameManager gameManager, GameSettings gameSettings, SO_normalItemTexture itemTexture)
     {
         m_gameManager = gameManager;
 
         m_gameSettings = gameSettings;
-
+        m_itemTexture = itemTexture;
         m_gameManager.StateChangedAction += OnGameStateChange;
 
         m_cam = Camera.main;
 
-        m_board = new Board(this.transform, gameSettings);
+        m_board = new Board(this.transform, gameSettings, m_itemTexture);
 
         Fill();
     }
@@ -51,7 +52,11 @@ public class BoardController : MonoBehaviour
         m_board.Fill();
         FindMatchesAndCollapse();
     }
-
+    public void ReFill()
+    {
+        m_board.Restart();
+        FindMatchesAndCollapse();
+    }
     private void OnGameStateChange(GameManager.eStateGame state)
     {
         switch (state)
