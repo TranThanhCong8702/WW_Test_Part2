@@ -16,4 +16,4 @@ Use more Scriptable Object and organize it into a SO folder,
 Utilize object pooling,
 Use Sprite Atlas for texture,
 Put widely used enum in separated class,
-For some file that contains Config Data line Constant.cs, you can try put in in txt file and upload, download through Cdn, so some bug can be fix by upload and redownload cdn files. So you dont have to rebuild project. 
+For some file that contains Config Data like Constant.cs, you can try put in in txt file and upload, download through Cdn, so some bug can be fix by upload and redownload cdn files. So you dont have to rebuild project. 
