@@ -51,6 +51,7 @@ public class LevelMoves : LevelCondition
     }
     public void ResetMove()
     {
+        m_conditionCompleted = false;
         m_moves = m_move_value;
         UpdateText();
     }

@@ -45,6 +45,7 @@ public class LevelTime : LevelCondition
 
     public void ResetTime()
     {
+        m_conditionCompleted = false;
         m_time = m_time_value;
     }
 }

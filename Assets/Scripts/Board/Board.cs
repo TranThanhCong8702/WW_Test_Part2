@@ -108,11 +108,25 @@ public class Board
                 item.SetViewRoot(m_root);
 
                 cell.Assign(item);
+                //if (item != null)
+                //{
+                //    m_normalItem[x, y] = item.ItemType;
+                //}
+                cell.ApplyItemPosition(false);
+            }
+        }
+    }
+    public void SaveStableStartBoard()
+    {
+        for (int x = 0; x < boardSizeX; x++)
+        {
+            for (int y = 0; y < boardSizeY; y++)
+            {
+                NormalItem item = m_cells[x, y].Item as NormalItem;
                 if (item != null)
                 {
                     m_normalItem[x, y] = item.ItemType;
                 }
-                cell.ApplyItemPosition(false);
             }
         }
     }
@@ -221,7 +235,7 @@ public class Board
                 {
                     NormalItem.eNormalType choosenType = UpdateAmountOnBoard(Utils.GetListNormalTypeExcept(types));
                     item.SetType(choosenType);
-                    Debug.Log(choosenType);
+                    //Debug.Log(choosenType);
                 }
                 else
                 {
@@ -782,7 +796,7 @@ public class Board
         NormalItem.eNormalType choosenType = filteredtypes[0];
         foreach(NormalItem.eNormalType filtered in filteredtypes)
         {
-            if (m_amountOnBoardDic[filtered] < min)
+            if (m_amountOnBoardDic[filtered] <= min)
             {
                 min = m_amountOnBoardDic[filtered];
                 choosenType = filtered;

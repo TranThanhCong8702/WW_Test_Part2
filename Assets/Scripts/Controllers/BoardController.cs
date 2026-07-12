@@ -51,7 +51,9 @@ public class BoardController : MonoBehaviour
     {
         m_board.Fill();
         FindMatchesAndCollapse();
+        StartCoroutine(RecordFirstBoard());
     }
+
     public void ReFill()
     {
         m_board.Restart();
@@ -65,6 +67,9 @@ public class BoardController : MonoBehaviour
                 IsBusy = false;
                 break;
             case GameManager.eStateGame.PAUSE:
+                IsBusy = true;
+                break;
+            case GameManager.eStateGame.GAME_STOPPED:
                 IsBusy = true;
                 break;
             case GameManager.eStateGame.GAME_OVER:
@@ -307,5 +312,10 @@ public class BoardController : MonoBehaviour
         }
 
         m_potentialMatch.Clear();
+    }
+    private IEnumerator RecordFirstBoard()
+    {
+        yield return new WaitUntil(() => IsBusy == false);
+        m_board.SaveStableStartBoard();
     }
 }

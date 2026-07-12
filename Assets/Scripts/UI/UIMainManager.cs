@@ -33,6 +33,7 @@ public class UIMainManager : MonoBehaviour
     internal void RestartGame()
     {
         m_gameManager.RestartLevel();
+        m_gameManager.SetState(GameManager.eStateGame.GAME_STARTED);
     }
 
     void Update()
@@ -71,7 +72,7 @@ public class UIMainManager : MonoBehaviour
             case GameManager.eStateGame.PAUSE:
                 ShowMenu<UIPanelPause>();
                 break;
-            case GameManager.eStateGame.GAME_OVER:
+            case GameManager.eStateGame.GAME_STOPPED:
                 ShowMenu<UIPanelGameOver>();
                 break;
         }

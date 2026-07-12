@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
         GAME_STARTED,
         PAUSE,
         GAME_OVER,
+        GAME_STOPPED,
     }
 
     private eStateGame m_state;
@@ -125,6 +126,7 @@ public class GameManager : MonoBehaviour
     }
     internal void ClearLevel()
     {
+        ClearLevelCondition();
         if (m_boardController)
         {
             m_boardController.Clear();
@@ -142,6 +144,12 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
+        State = eStateGame.GAME_STOPPED;
+        //ClearLevelCondition();
+    }
+
+    public void ClearLevelCondition()
+    {
         State = eStateGame.GAME_OVER;
         m_eLevelMode = 0;
         if (m_levelCondition != null)
